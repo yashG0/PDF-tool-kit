@@ -1,11 +1,16 @@
-from uuid import uuid4
-
+import os
 from PyPDF2 import PdfReader, PdfWriter
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import streamlit as st
 
 
 def split_pdfs(file: UploadedFile, pages: str) -> None:
+    output_path = "output/spit"
+    os.makedirs(output_path, exist_ok=True)
+
+    # Save the output file
+    output_filename: str = os.path.join(output_path, "split_output.pdf")
+
     try:
         pdf_reader = PdfReader(file)
 
@@ -18,7 +23,7 @@ def split_pdfs(file: UploadedFile, pages: str) -> None:
             pdf_writer.add_page(pdf_reader.pages[page])
 
         # saving the split file
-        output_filename = f"output/split/split_output-{uuid4()}.pdf"
+
         with open(output_filename, "wb") as output_file:
             pdf_writer.write(output_file)
 

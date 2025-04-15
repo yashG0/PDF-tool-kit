@@ -1,16 +1,21 @@
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 from PyPDF2 import PdfMerger
 import streamlit as st
-from uuid import uuid4
+import os
 
 
 def merge_pdfs(files: list[UploadedFile]) -> None:
+    output_path = "output/merge"
+    os.makedirs(output_path, exist_ok=True)
+
+    # Save the output file
+    output_filename: str = os.path.join(output_path, "merged_output.pdf")
+
     try:
         merger = PdfMerger()
         for file in files:
             merger.append(file)
 
-        output_filename = f"output/merge/merged_pdf-{uuid4()}.pdf"
         merger.write(output_filename)
         merger.close()
 

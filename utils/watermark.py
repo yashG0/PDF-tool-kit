@@ -3,7 +3,7 @@ from uuid import uuid4
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import fitz
 import streamlit as st
-
+import os
 from PIL import Image
 import io
 
@@ -20,6 +20,12 @@ def make_image_transparent(image_data: bytes, alpha: float = 0.3) -> bytes:
 
 
 def add_watermark(pdf: UploadedFile, watermark: UploadedFile) -> None:
+    output_path = "output/watermark"
+    os.makedirs(output_path, exist_ok=True)
+
+    # Save the output file
+    output_filename: str = os.path.join(output_path, "watermark_output.pdf")
+
     try:
         pdf_doc = fitz.open(stream=pdf.read(), filetype="pdf")
 
@@ -35,7 +41,6 @@ def add_watermark(pdf: UploadedFile, watermark: UploadedFile) -> None:
             )
 
         # save the watermark PDF
-        output_filename = f"output/watermark/watermark_output-{uuid4()}.pdf"
         pdf_doc.save(output_filename)
 
         # provide download link for the watermark PDF

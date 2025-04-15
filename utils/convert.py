@@ -1,17 +1,22 @@
-from uuid import uuid4
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 from PIL import Image
 import streamlit as st
 import fitz
+import os
 
 
 def convert_pdf_to_image(pdf_file: UploadedFile):
+    output_path = "output/image"
+    os.makedirs(output_path, exist_ok=True)
+
+    # Save the output file
+    img_filename: str = os.path.join(output_path, "converted_output.pdf")
+
     try:
         doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
 
         for i, page in enumerate(doc):
             pix = page.get_pixmap(dpi=200)
-            img_filename = f"output/convert/image/Converted_page_{i + 1}.png"
             pix.save(img_filename)
 
             with open(img_filename, 'rb') as f:
@@ -28,9 +33,14 @@ def convert_pdf_to_image(pdf_file: UploadedFile):
 
 
 def convert_image_to_pdf(image_path: UploadedFile):
+    output_path = "output/convert/pdf"
+    os.makedirs(output_path, exist_ok=True)
+
+    # Save the output file
+    pdf_filename: str = os.path.join(output_path, "converted_output.pdf")
+
     try:
         image = Image.open(image_path)
-        pdf_filename = f'output/convert/pdf/converted_output-{uuid4()}.pdf'
         image.convert('RGB').save(pdf_filename)
 
         # provide link to download
