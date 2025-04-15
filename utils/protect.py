@@ -2,9 +2,17 @@ from streamlit.runtime.uploaded_file_manager import UploadedFile
 import streamlit as st
 from PyPDF2 import PdfWriter, PdfReader
 from io import BytesIO
+import os
 
 
 def protect_pdf(pdf_file: UploadedFile, passwd: str) -> None:
+    # Ensure output folder exists
+    output_path = "output/protect"
+    os.makedirs(output_path, exist_ok=True)
+
+    # Save the output file
+    output_filename: str = os.path.join(output_path, "protected_output.pdf")
+
     try:
         pdf_reader = PdfReader(pdf_file)
         pdf_writer = PdfWriter()
@@ -19,8 +27,6 @@ def protect_pdf(pdf_file: UploadedFile, passwd: str) -> None:
         pdf_writer.write(pdf_buffer)
         pdf_buffer.seek(0)
 
-        # save the password _ protected pdf
-        output_filename: str = "output/protect/protected_output.pdf"
         with open(output_filename, "wb") as f:
             st.download_button(
                 label="Download Protected PDF",
