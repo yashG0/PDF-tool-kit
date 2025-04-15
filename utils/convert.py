@@ -10,7 +10,7 @@ def convert_pdf_to_image(pdf_file: UploadedFile):
     os.makedirs(output_path, exist_ok=True)
 
     # Save the output file
-    img_filename: str = os.path.join(output_path, "converted_output.pdf")
+    img_filename: str = os.path.join(output_path, "converted_output.png")
 
     try:
         doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
